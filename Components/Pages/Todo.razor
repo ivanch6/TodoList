@@ -1,0 +1,45 @@
+﻿@page "/todo"
+@rendermode InteractiveServer
+
+<PageTitle>Список дел</PageTitle>
+
+<h1>Список дел (@todos.Count(todo => !todo.IsDone))</h1>
+
+<ul>
+    @foreach (var todo in todos)
+    {
+        <li>
+            <input type="checkbox" @bind="todo.IsDone" />
+            <input @bind="todo.Title" />
+            <button @onclick="() => DeleteTodo(todo)">Удалить</button>
+        </li>
+    }
+</ul>
+
+<input placeholder="Что нужно сделать" @bind="newTodo" />
+<button @onclick="AddTodo">Добавить</button>
+
+@code {
+    private List<TodoItem> todos = new();
+    private string? newTodo;
+
+    private void AddTodo()
+    {
+        if (!string.IsNullOrWhiteSpace(newTodo))
+        {
+            todos.Add(new TodoItem { Title = newTodo });
+            newTodo = string.Empty;
+        }
+    }
+
+    private void DeleteTodo(TodoItem todo)
+    {
+        todos.Remove(todo);
+    }
+
+    public class TodoItem
+    {
+        public string Title { get; set; } = string.Empty;
+        public bool IsDone { get; set; }
+    }
+}
